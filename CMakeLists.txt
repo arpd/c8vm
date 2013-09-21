@@ -8,6 +8,11 @@ set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 set (c8vm_VERSION_MAJOR 0)
 set (c8vm_VERSION_MINOR 1)
 
+# compiler config
+set (CC  "/usr/bin/clang")
+set (CXX "/usr/bin/clang++")
+set (CMAKE_CXX_FLAGS "-g --std=c++0x -Wall -DDEBUG")
+
 # configure header file to pass some cmake settings to the src
 configure_file (
     "${PROJECT_SOURCE_DIR}/c8_config.h.cmake"
