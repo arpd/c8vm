@@ -22,5 +22,8 @@ namespace iset {
     void set_regx_lshift(vmstate* state);
     void skip_if_not_equal_regs(vmstate* state);
     void set_index(vmstate* state);
+    void jump_offset(vmstate* state);
+    void set_reg_rand_masked(vmstate* state);
+    void draw_sprite(vmstate* state);
 };
 #endif
