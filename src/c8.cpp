@@ -87,14 +87,51 @@ void C8VM::do_cycle() {
             iset::set_index(&state);
             break;
         case 0xB:
+            iset::jump_offset(&state);
             break;
         case 0xC:
+            iset::set_reg_rand_masked(&state);
             break;
         case 0xD:
+            iset::draw_sprite(&state);
             break;
         case 0xE:
+            if (third == 0x9 && fourth == 0xE)
+                iset::skip_if_key_pressed(&state);
+            else if (third == 0xA && fourth == 0x1)
+                iset::skip_if_key_not_pressed(&state);
             break;
         case 0xF:
+            switch (third) {
+                case 0x0:
+                    if (fourth == 0x7)
+                        iset::set_reg_delay(&state);
+                    else if (fourth == 0xA)
+                        iset::wait_key_press_store(&state);
+                    break;
+                case 0x1:
+                    if (fourth == 0x5)
+                        iset::set_delay_regx(&state);
+                    else if (fourth == 0x8)
+                        iset::set_sound_regx(&state);
+                    else if (fourth == 0xE)
+                        iset::add_regx_to_index(&state);
+                    break;
+                case 0x2:
+                    iset::get_sprite_regx(&state);
+                    break;
+                case 0x3:
+                    iset::split_decimal(&state);
+                    break;
+                case 0x5:
+                    iset::dump_regs_to_regx(&state);
+                    break;
+                case 0x6:
+                    iset::slurp_regs_to_regx(&state);
+                    break;
+                default:
+                    break; //TODO: failure here
+            }
             break;
         default:
             break; // TODO: Failure here
