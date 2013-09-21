@@ -3,6 +3,7 @@ project (c8vm)
 
 set (PROJECT_SOURCE_DIR src/)
 set (PROJECT_BINARY_DIR bin/)
+set (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 # ver
 set (c8vm_VERSION_MAJOR 0)
 set (c8vm_VERSION_MINOR 1)
