@@ -6,7 +6,6 @@ typedef unsigned short word;
 typedef unsigned long  dword;
 typedef word c8opcode;
 typedef byte c8register;
-const int NULL = 0x0;
 
 const unsigned int NUM_REGISTERS = 16,
                    MEM_SIZE      = 4096,    // # of bytes
@@ -25,5 +24,7 @@ typedef struct vmstate {
     byte delay_timer, sound_timer;
     byte key[16];
     unsigned int frequency;
+    bool on;
+    long cycles;
 }vmstate;
 #endif
