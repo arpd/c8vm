@@ -26,5 +26,6 @@ typedef struct vmstate {
     unsigned int frequency;
     bool on;
     long cycles;
+    bool gfx_stale;
 }vmstate;
 #endif

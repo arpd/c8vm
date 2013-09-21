@@ -279,10 +279,27 @@ void iset::set_reg_rand_masked(vmstate* state) {
 // ----------------------------------------------------------------------------
 void iset::draw_sprite(vmstate* state) {
     /* Opcode: DXYN
-     * Set the index register to NNN
+     * Draw the sprite found at [index] to the coordinates taken from 
+     * [X],[Y]. The sprite is N rows tall. If there is collision, set 
+     * register F to 1.
      */
-    std::cerr << "[-] FAILURE: draw_sprite not implemented" << std::endl;
-    abort();
+    state->registers[0xF] = 0;
+    byte x = (state->curr_opcode & 0x0F00) >> 8,
+         y = (state->curr_opcode & 0x00F0) >> 4,
+         n = (state->curr_opcode & 0x000F);
+    byte pixel_row;
+    for (byte yoff = 0; yoff < n; ++yoff) {
+        pixel_row = state->memory[state->index + yoff];
+        for (byte xoff = 0; xoff < 8; ++xoff) {
+            if ((pixel_row & (0x80 >> xoff)) != 0) {
+                if (state->gfx_buffer[(x + xoff + ((y + yoff) * 64))] == 1)
+                    state->registers[0xF] = 1;
+                state->gfx_buffer[x + xoff + ((y + yoff) * 64)] ^= 1;
+            }
+        }
+    }
+
+    state->gfx_stale = true; // let the vm know to redraw the screen
 }
 
 // ----------------------------------------------------------------------------
