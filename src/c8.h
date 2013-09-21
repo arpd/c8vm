@@ -2,6 +2,7 @@
 #define __C8_H__
 
 #include "def.h"
+#include <string>
 
 class C8VM {
     vmstate state;
@@ -10,10 +11,11 @@ class C8VM {
     C8VM();
     C8VM(unsigned int);
     //~C8VM();
-    bool start();
-    bool stop();
-    bool pause();
-    bool reset();
+    void start();
+    void stop();
+    void pause();
+    void reset();
+    void load(const std::string&);
 
     private:
     void do_cycle();
