@@ -1,6 +1,8 @@
 #include "def.h"
 #include "iset.h"
 #include <random>
+#include <iostream>
+#include "stdlib.h"
 
 /* CHIP-8 has 35 opcodes, which are all two bytes long. The most significant
  * byte is stored first. The opcodes are listed below, in hexadecimal and with
@@ -161,7 +163,7 @@ void iset::set_regx_xor_regy(vmstate* state) {
 void iset::set_regx_add_regy(vmstate* state) {
     /* Opcode: 8XY4
      * Set register X to register X + register Y
-     *      [!] Register F is set to 1 if there is a carry, else 0
+     *      [!] register F is set to 1 if there is a carry, else 0
      */
     byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
         regy = (byte) state->curr_opcode & 0x00F0 >> 4;
@@ -178,7 +180,7 @@ void iset::set_regx_add_regy(vmstate* state) {
 void iset::set_regx_sub_regy(vmstate* state) {
     /* Opcode: 8XY5
      * Set register X to register X - register Y
-     *      [!] Register F is set to 0 if there is a borrow, else 0
+     *      [!] register F is set to 0 if there is a borrow, else 0
      */
     byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
         regy = (byte) state->curr_opcode & 0x00F0 >> 4;
@@ -194,7 +196,7 @@ void iset::set_regx_sub_regy(vmstate* state) {
 void iset::set_regx_rshift(vmstate* state) {
     /* Opcode: 8XY6
      * Set register X to register X >> 1
-     *      [!] Register F is set to the value of the LSB before the shift
+     *      [!] register F is set to the value of the LSB before the shift
      */
     byte regx = (byte) state->curr_opcode & 0x0F00 >> 8;
     state->registers[0xF] = state->registers[regx] & 0x00F;
@@ -206,7 +208,7 @@ void iset::set_regx_rshift(vmstate* state) {
 void iset::set_regx_regy_sub_regx(vmstate* state) {
     /* Opcode: 8XY7
      * Set register X to register Y - register X
-     *      [!] Register F is set to 0 if there is a borrow, else 0
+     *      [!] register F is set to 0 if there is a borrow, else 0
      */
     byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
         regy = (byte) state->curr_opcode & 0x00F0 >> 4;
@@ -222,7 +224,7 @@ void iset::set_regx_regy_sub_regx(vmstate* state) {
 void iset::set_regx_lshift(vmstate* state) {
     /* Opcode: 8XYE
      * Set register X to register X << 1
-     *      [!] Register F is set to the value of the MSB before the shift
+     *      [!] register F is set to the value of the MSB before the shift
      */
     byte regx = (byte) state->curr_opcode & 0x0F00 >> 8;
     state->registers[0xF] = (state->registers[regx] & 0xF00) >> 8;
@@ -256,7 +258,7 @@ void iset::set_index(vmstate* state) {
 // ----------------------------------------------------------------------------
 void iset::jump_offset(vmstate* state) {
     /* Opcode: BNNN
-     * Jump to the address NNN + Register 0
+     * Jump to the address NNN + register 0
      */
     word addr = state->curr_opcode & 0x0FFF;
     addr += state->registers[0];
@@ -279,9 +281,110 @@ void iset::draw_sprite(vmstate* state) {
     /* Opcode: DXYN
      * Set the index register to NNN
      */
-    word addr = state->curr_opcode & 0x0FFF;
-
-    state->index = addr;
+    std::cerr << "[-] FAILURE: draw_sprite not implemented" << std::endl;
+    abort();
 }
 
 // ----------------------------------------------------------------------------
+void iset::skip_if_key_pressed(vmstate* state) {
+    /* Opcode: EX9E
+     * Skip the next instruction if the key in register X is pressed
+     */
+    std::cerr << "[-] FAILURE: skip_if_key_pressed not implemented" << std::endl;
+    abort();
+}
+
+// ----------------------------------------------------------------------------
+void iset::skip_if_key_not_pressed(vmstate* state) {
+    /* Opcode: EXA1
+     * Skip the next instruction if the key in register X is not pressed
+     */
+    std::cerr << "[-] FAILURE: skip_if_key_not_pressed not implemented" << std::endl;
+    abort();
+}
+
+// ----------------------------------------------------------------------------
+void iset::set_reg_delay(vmstate* state) {
+    /* Opcode: FX07
+     * Set the register X to the value of the delay timer
+     */
+    std::cerr << "[-] FAILURE: set_reg_delay not implemented" << std::endl;
+    abort();
+}
+
+// ----------------------------------------------------------------------------
+void iset::wait_key_press_store(vmstate* state) {
+    /* Opcode: FX0A
+     * Wait for a key press, then store in the register X
+     */
+    std::cerr << "[-] FAILURE: wait_key_press_store not implemented" << std::endl;
+    abort();
+}
+
+// ----------------------------------------------------------------------------
+void iset::set_delay_regx(vmstate* state) {
+    /* Opcode: FX15
+     * Set the delay timer to register X
+     */
+    std::cerr << "[-] FAILURE: set_delay_regx not implemented" << std::endl;
+    abort();
+}
+
+// ----------------------------------------------------------------------------
+void iset::set_sound_regx(vmstate* state) {
+    /* Opcode: FX18
+     * Set the sound timer to register X
+     */
+    std::cerr << "[-] FAILURE: set_sound_regx not implemented" << std::endl;
+    abort();
+}
+
+// ----------------------------------------------------------------------------
+void iset::add_regx_to_index(vmstate* state) {
+    /* Opcode: FX1E
+     * Add the value from register X to the index register
+     */
+    std::cerr << "[-] FAILURE: add_regx_to_index not implemented" << std::endl;
+    abort();
+}
+
+// ----------------------------------------------------------------------------
+void iset::get_sprite_regx(vmstate* state) {
+    /* Opcode: FX29
+     * Set the index register to the location of the sprite for the character
+     * in register X
+     */
+    std::cerr << "[-] FAILURE: get_sprite_regx not implemented" << std::endl;
+    abort();
+}
+
+// ----------------------------------------------------------------------------
+void iset::split_decimal(vmstate* state) {
+    /* Opcode: FX33
+     * Treating register X as a decimal, put the hundreds digit in [index], the
+     * tens digit in [index+1] and the ones digit at [index+2]
+     */
+    std::cerr << "[-] FAILURE: split_decimal not implemented" << std::endl;
+    abort();
+}
+
+// ----------------------------------------------------------------------------
+void iset::dump_regs_to_regx(vmstate* state) {
+    /* Opcode: FX55
+     * Dump values of registers from register 0 -> register X in the memory
+     * starting at [index]
+     */
+    std::cerr << "[-] FAILURE: dump_regs_to_regx not implemented" << std::endl;
+    abort();
+}
+
+
+// ----------------------------------------------------------------------------
+void iset::slurp_regs_to_regx(vmstate* state) {
+    /* Opcode: FX65
+     * Set values of registers from register 0 -> register X to values in
+     * memory starting at [index]
+     */
+    std::cerr << "[-] FAILURE: slurp_regs_to_regx not implemented" << std::endl;
+    abort();
+}

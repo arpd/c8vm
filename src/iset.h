@@ -25,5 +25,16 @@ namespace iset {
     void jump_offset(vmstate* state);
     void set_reg_rand_masked(vmstate* state);
     void draw_sprite(vmstate* state);
+    void skip_if_key_pressed(vmstate* state);
+    void skip_if_key_not_pressed(vmstate* state);
+    void set_reg_delay(vmstate* state);
+    void wait_key_press_store(vmstate* state);
+    void set_delay_regx(vmstate* state);
+    void set_sound_regx(vmstate* state);
+    void add_regx_to_index(vmstate* state);
+    void get_sprite_regx(vmstate* state);
+    void split_decimal(vmstate* state);
+    void dump_regs_to_regx(vmstate* state);
+    void slurp_regs_to_regx(vmstate* state);
 };
 #endif
