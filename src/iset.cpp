@@ -22,9 +22,8 @@ void iset::clear_screen(vmstate* state) {
     /* Opcode: 00E0
      * Call the routine at address NNN
      */
-    for (unsigned int i = 0; i < MEM_SIZE; ++i)
-        state->memory[i] = 0x0;
-
+    for (unsigned int i = 0; i < GFX_SIZE; ++i)
+        state->gfx_buffer[i] = 0x0;
 }
 
 void iset::ret_routine(vmstate* state) {
