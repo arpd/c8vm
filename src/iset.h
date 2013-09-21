@@ -4,6 +4,7 @@ namespace iset {
     void call_prog(vmstate* state);
     void clear_screen(vmstate* state);
     void ret_routine(vmstate* state);
+    void jump(vmstate* state);
     void call_routine(vmstate* state);
     void skip_if_equal(vmstate* state);
     void skip_if_not_equal(vmstate* state);

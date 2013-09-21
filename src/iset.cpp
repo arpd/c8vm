@@ -34,6 +34,14 @@ void iset::ret_routine(vmstate* state) {
     --state->sp;
 }
 
+void iset::jump(vmstate* state) {
+    /* Opcode: 1NNN
+     * Jump to address NNN
+     */
+    state->ip = state->curr_opcode & 0x0FFF;
+    return;
+}
+
 void iset::call_routine(vmstate* state) {
     /* Opcode: 2NNN
      * Call the routine at address NNN
@@ -42,8 +50,7 @@ void iset::call_routine(vmstate* state) {
     // called
     state->stack[state->sp] = state->ip;
     ++state->sp;
-    // pull routine address from opcode
-    state->ip = state->curr_opcode & 0x0FFF;
+    iset::jump(state);
 }
 
 void iset::skip_if_equal(vmstate* state) {
