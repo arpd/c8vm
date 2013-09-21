@@ -4,7 +4,19 @@
 #include <fstream>
 #include <vector>
 
+#include <GL/glew.h>
+#include <GL/glut.h>
+
 using namespace std;
+
+// opengl display
+#define SCREEN_W 64
+#define SCREEN_H 32
+#define MODIFIER 10 // TODO: pull this out to cmake config?
+
+const int window_w = SCREEN_W * MODIFIER;
+const int window_h = SCREEN_H * MODIFIER;
+
 
 // ----------------------------------------------------------------------------
 void print_usage() {
@@ -34,6 +46,20 @@ string& load_binary(string& out, char* path) {
 }
 
 // ----------------------------------------------------------------------------
+void opengl_init(int& argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+    glutInitWindowSize(window_w, window_h);
+    glutInitWindowPosition(320, 320);
+    glutCreateWindow("c8vm");
+}
+// ----------------------------------------------------------------------------
+
+void draw_buf(const byte* gfx_buf, const unsigned int size) {
+    return;
+}
+// ----------------------------------------------------------------------------
+
 int main(int argc, char** argv) {
     if (argc < 2) {
         print_usage();
@@ -43,6 +69,9 @@ int main(int argc, char** argv) {
     // load the binary
     string bin = "";
     bin = load_binary(bin, argv[1]);
+
+    // opengl stuff (window, input callbacks)
+    opengl_init(argc, argv);
 
     // init vm
     C8VM vm;

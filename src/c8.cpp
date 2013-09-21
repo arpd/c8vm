@@ -6,6 +6,8 @@
 #include <iomanip>
 #endif
 
+extern void draw_buf(const byte* gfx_buf, const unsigned int size);
+
 // ----------------------------------------------------------------------------
 C8VM::C8VM() {
     init();
@@ -137,6 +139,16 @@ void C8VM::do_cycle() {
             break; // TODO: Failure here
     }
     state.cycles++;
+
+    if (state.gfx_stale) {
+        // draw_buf is defined by the harness (i.e. c8vm.cpp)
+        const byte* gfx_buf = &state.gfx_buffer[0];
+        draw_buf(
+                gfx_buf, GFX_SIZE
+                //static_cast<byte* const>(&state.gfx_buffer)
+        );
+        state.gfx_stale = false;
+    }
 
     if (state.ip > MEM_SIZE - 2)
         state.on = false;
