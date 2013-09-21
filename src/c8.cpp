@@ -41,8 +41,8 @@ void C8VM::fetch_opcode() {
               << std::setfill('0')
               << std::hex;
     std::cerr << "read opcode: " << std::setw(6) << opcode << std::endl;
-    std::cerr << "  [ip: ]" << state.ip << std::endl;
     std::cerr << std::dec;
+    std::cerr << "  [ip: ]" << state.ip << std::endl;
 #endif
 }
 
