@@ -9,7 +9,7 @@ do_clean () {
 
 do_build() {
     echo -e "[-] starting new CMake build"
-    cmake . 1>/dev/null
+    cmake .
     echo -e "[-] building"
     make
 }
