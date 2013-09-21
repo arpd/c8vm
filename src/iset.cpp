@@ -19,6 +19,8 @@ void iset::call_prog(vmstate* state) {
     return;
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::clear_screen(vmstate* state) {
     /* Opcode: 00E0
      * Call the routine at address NNN
@@ -26,6 +28,8 @@ void iset::clear_screen(vmstate* state) {
     for (unsigned int i = 0; i < GFX_SIZE; ++i)
         state->gfx_buffer[i] = 0x0;
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::ret_routine(vmstate* state) {
     /* Opcode: 00EE
@@ -35,6 +39,8 @@ void iset::ret_routine(vmstate* state) {
     --state->sp;
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::jump(vmstate* state) {
     /* Opcode: 1NNN
      * Jump to address NNN
@@ -42,6 +48,8 @@ void iset::jump(vmstate* state) {
     state->ip = state->curr_opcode & 0x0FFF;
     return;
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::call_routine(vmstate* state) {
     /* Opcode: 2NNN
@@ -53,6 +61,8 @@ void iset::call_routine(vmstate* state) {
     ++state->sp;
     iset::jump(state);
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::skip_if_equal(vmstate* state) {
     /* Opcode: 3XNN
@@ -67,6 +77,8 @@ void iset::skip_if_equal(vmstate* state) {
 
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::skip_if_not_equal(vmstate* state) {
     /* Opcode: 4XNN
      * Skip the next instruction if register X is not equal to NN
@@ -78,6 +90,8 @@ void iset::skip_if_not_equal(vmstate* state) {
     if (state->registers[reg] != comparison)
         state->ip += 0x2;
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::skip_if_equal_regs(vmstate* state) {
     /* Opcode: 5XY0
@@ -91,6 +105,8 @@ void iset::skip_if_equal_regs(vmstate* state) {
         state->ip += 0x2;
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::set_reg(vmstate* state) {
     /* Opcode: 6XNN
      * Set the register X to NN
@@ -99,6 +115,8 @@ void iset::set_reg(vmstate* state) {
     c8register val = state->curr_opcode & 0x00FF;
     state->registers[reg] = val;
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::add_reg(vmstate* state) {
     /* Opcode: 7XNN
@@ -109,6 +127,8 @@ void iset::add_reg(vmstate* state) {
     state->registers[reg] += val;
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::set_regx_regy(vmstate* state) {
     /* Opcode: 8XY0
      * Set register X to the value of register Y
@@ -117,6 +137,8 @@ void iset::set_regx_regy(vmstate* state) {
         regy = (byte) state->curr_opcode & 0x00F0 >> 4;
     state->registers[regx] = state->registers[regy];
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::set_regx_or_regy(vmstate* state) {
     /* Opcode: 8XY1
@@ -127,6 +149,8 @@ void iset::set_regx_or_regy(vmstate* state) {
     state->registers[regx] |= state->registers[regy];
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::set_regx_and_regy(vmstate* state) {
     /* Opcode: 8XY2
      * Set register X to register X & register Y
@@ -136,6 +160,8 @@ void iset::set_regx_and_regy(vmstate* state) {
     state->registers[regx] &= state->registers[regy];
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::set_regx_xor_regy(vmstate* state) {
     /* Opcode: 8XY3
      * Set register X to register X ^ register Y
@@ -144,6 +170,8 @@ void iset::set_regx_xor_regy(vmstate* state) {
         regy = (byte) state->curr_opcode & 0x00F0 >> 4;
     state->registers[regx] ^= state->registers[regy];
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::set_regx_add_regy(vmstate* state) {
     /* Opcode: 8XY4
@@ -161,6 +189,8 @@ void iset::set_regx_add_regy(vmstate* state) {
     state->registers[regx] += state->registers[regy];
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::set_regx_sub_regy(vmstate* state) {
     /* Opcode: 8XY5
      * Set register X to register X - register Y
@@ -176,6 +206,8 @@ void iset::set_regx_sub_regy(vmstate* state) {
     state->registers[regx] -= state->registers[regy];
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::set_regx_rshift(vmstate* state) {
     /* Opcode: 8XY6
      * Set register X to register X >> 1
@@ -186,6 +218,8 @@ void iset::set_regx_rshift(vmstate* state) {
 
     state->registers[regx] >>= 1;
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::set_regx_regy_sub_regx(vmstate* state) {
     /* Opcode: 8XY7
@@ -202,6 +236,8 @@ void iset::set_regx_regy_sub_regx(vmstate* state) {
     state->registers[regx] -= state->registers[regy];
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::set_regx_lshift(vmstate* state) {
     /* Opcode: 8XYE
      * Set register X to register X << 1
@@ -212,6 +248,8 @@ void iset::set_regx_lshift(vmstate* state) {
 
     state->registers[regx] <<= 1;
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::skip_if_not_equal_regs(vmstate* state) {
     /* Opcode: 9XY0
@@ -225,6 +263,8 @@ void iset::skip_if_not_equal_regs(vmstate* state) {
         state->ip += 0x2;
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::set_index(vmstate* state) {
     /* Opcode: ANNN
      * Set the index register to NNN
@@ -233,6 +273,8 @@ void iset::set_index(vmstate* state) {
 
     state->index = addr;
 }
+
+// ----------------------------------------------------------------------------
 
 void iset::jump_offset(vmstate* state) {
     /* Opcode: BNNN
@@ -244,6 +286,8 @@ void iset::jump_offset(vmstate* state) {
     iset::jump(state);
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::set_reg_rand_masked(vmstate* state) {
     /* Opcode: CXNN
      * Set VX to a random number and (& mask) NN.
@@ -253,6 +297,8 @@ void iset::set_reg_rand_masked(vmstate* state) {
     state->registers[0] = val & mask;
 }
 
+// ----------------------------------------------------------------------------
+
 void iset::draw_sprite(vmstate* state) {
     /* Opcode: DXYN
      * Set the index register to NNN
@@ -261,3 +307,5 @@ void iset::draw_sprite(vmstate* state) {
 
     state->index = addr;
 }
+
+// ----------------------------------------------------------------------------
