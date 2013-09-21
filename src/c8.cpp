@@ -15,11 +15,89 @@ C8VM::C8VM() {
 void C8VM::do_cycle() {
     fetch_opcode();
     byte first  = ((state.curr_opcode & 0xF000) >> 12),
-         second = ((state.curr_opcode & 0x0F00) >> 8);
+         second = ((state.curr_opcode & 0x0F00) >> 8),
+         third  = ((state.curr_opcode & 0x00F0) >> 4),
+         fourth =  (state.curr_opcode & 0x000F);
     // decode current opcode
     switch (first) {
-        case 0x0: iset::call_prog(&state); break;
-        default: break; // TODO: Failure here
+        case 0x0:
+            if (third == 0xE && fourth == 0x0)
+                iset::clear_screen(&state);
+            else if (third == 0xE && fourth == 0xE)
+                iset::ret_routine(&state);
+            else
+                iset::call_prog(&state);
+            break;
+        case 0x1:
+            iset::jump(&state);
+            break;
+        case 0x2:
+            iset::call_routine(&state);
+            break;
+        case 0x3:
+            iset::skip_if_equal(&state);
+            break;
+        case 0x4:
+            iset::skip_if_not_equal(&state);
+            break;
+        case 0x5:
+            iset::skip_if_equal_regs(&state);
+            break;
+        case 0x6:
+            iset::set_reg(&state);
+            break;
+        case 0x7:
+            iset::add_reg(&state);
+            break;
+        case 0x8:
+            switch(fourth) {
+                case 0x0:
+                    iset::set_regx_regy(&state);
+                    break;
+                case 0x1:
+                    iset::set_regx_or_regy(&state);
+                    break;
+                case 0x2:
+                    iset::set_regx_and_regy(&state);
+                    break;
+                case 0x3:
+                    iset::set_regx_xor_regy(&state);
+                    break;
+                case 0x4:
+                    iset::set_regx_add_regy(&state);
+                    break;
+                case 0x5:
+                    iset::set_regx_sub_regy(&state);
+                    break;
+                case 0x6:
+                    iset::set_regx_rshift(&state);
+                    break;
+                case 0x7:
+                    iset::set_regx_regy_sub_regx(&state);
+                    break;
+                case 0xE:
+                    iset::set_regx_lshift(&state);
+                    break;
+            }
+            break;
+        case 0x9:
+            iset::skip_if_not_equal_regs(&state);
+            break;
+        case 0xA:
+            iset::set_index(&state);
+            break;
+        case 0xB:
+            break;
+        case 0xC:
+            break;
+        case 0xD:
+            break;
+        case 0xE:
+            break;
+        case 0xF:
+            break;
+        default:
+            break; // TODO: Failure here
     }
     state.cycles++;
 
