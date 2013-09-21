@@ -225,12 +225,3 @@ void set_index(vmstate* state) {
 
     state->index = addr;
 }
-
-void func(vmstate* state) {
-    /* Opcode: opcode
-     */
-}
-void func(vmstate* state) {
-    /* Opcode: opcode
-     */
-}

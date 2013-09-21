@@ -22,4 +22,5 @@ add_executable (
         c8vm
         ${PROJECT_SOURCE_DIR}/c8vm.cpp
         ${PROJECT_SOURCE_DIR}/c8.cpp
+        ${PROJECT_SOURCE_DIR}/iset.cpp
 )
