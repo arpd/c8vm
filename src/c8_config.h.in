@@ -1,0 +1,2 @@
+#define c8vm_VERSION_MAJOR @c8vm_VERSION_MAJOR@
+#define c8vm_VERSION_MINOR @c8vm_VERSION_MINOR@
