@@ -16,9 +16,14 @@ class C8VM {
     void pause();
     void reset();
     void load(const std::string&);
+    byte* get_keys();
+    void do_cycle();
+    bool is_on();
+    byte* get_gfx_buf();
+    bool get_gfx_stale();
+    void set_gfx_stale(bool);
 
     private:
-    void do_cycle();
     void fetch_opcode();
     void init();
     void clean();

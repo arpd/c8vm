@@ -140,16 +140,6 @@ void C8VM::do_cycle() {
     }
     state.cycles++;
 
-    if (state.gfx_stale) {
-        // draw_buf is defined by the harness (i.e. c8vm.cpp)
-        const byte* gfx_buf = &state.gfx_buffer[0];
-        draw_buf(
-                gfx_buf, GFX_SIZE
-                //static_cast<byte* const>(&state.gfx_buffer)
-        );
-        state.gfx_stale = false;
-    }
-
     if (state.ip > MEM_SIZE - 2)
         state.on = false;
 }
@@ -179,6 +169,8 @@ void C8VM::init() {
     state.sp          = 0x0;
     state.index       = 0x0;
     state.curr_opcode = 0x0;
+    state.gfx_stale   = true;
+    state.on          = false;
     for (unsigned int i = 0; i < GFX_SIZE; ++i)
         state.gfx_buffer[i] = 0x0;
     for (unsigned int i = 0; i < STACK_SIZE; ++i)
@@ -210,8 +202,7 @@ void C8VM::clean() {
 
 // ----------------------------------------------------------------------------
 void C8VM::start() {
-    while (state.on)
-        do_cycle();
+    state.on = true;
 }
 
 // ----------------------------------------------------------------------------
@@ -225,4 +216,33 @@ void C8VM::pause() {
 
 // ----------------------------------------------------------------------------
 void C8VM::reset() {
+}
+
+// ----------------------------------------------------------------------------
+byte* C8VM::get_keys() {
+    return state.key;
+}
+
+// ----------------------------------------------------------------------------
+
+bool C8VM::is_on() {
+    return state.on;
+}
+
+// ----------------------------------------------------------------------------
+
+byte* C8VM::get_gfx_buf() {
+    return state.gfx_buffer;
+}
+
+// ----------------------------------------------------------------------------
+
+void C8VM::set_gfx_stale(bool v) {
+    state.gfx_stale = v;
+}
+
+// ----------------------------------------------------------------------------
+
+bool C8VM::get_gfx_stale() {
+    return state.gfx_stale;
 }
