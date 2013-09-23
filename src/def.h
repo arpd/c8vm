@@ -28,4 +28,8 @@ typedef struct vmstate {
     long cycles;
     bool gfx_stale;
 }vmstate;
+
+enum debug_kind {
+    iset_decode,
+};
 #endif

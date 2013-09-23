@@ -4,6 +4,7 @@
 #ifdef DEBUG
 #include <iostream>
 #include <iomanip>
+#include "debug.h"
 #endif
 
 extern void draw_buf(const byte* gfx_buf, const unsigned int size);
@@ -153,13 +154,8 @@ void C8VM::fetch_opcode() {
     opcode         |= state.memory[state.ip++];
     state.curr_opcode = opcode;
 #ifdef DEBUG
-    std::cerr << std::showbase
-              << std::internal
-              << std::setfill('0')
-              << std::hex;
-    std::cerr << "read opcode: " << std::setw(6) << opcode << std::endl;
-    std::cerr << std::dec;
-    std::cerr << "  [ip: ]" << state.ip << std::endl;
+    std::cerr << "read opcode: "; print_hex(std::cerr, opcode);
+    std::cerr << "  [ip: " << state.ip << "]" << std::endl;
 #endif
 }
 

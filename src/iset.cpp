@@ -3,6 +3,7 @@
 #include <random>
 #include <iostream>
 #include "stdlib.h"
+#include "debug.h"
 
 /* CHIP-8 has 35 opcodes, which are all two bytes long. The most significant
  * byte is stored first. The opcodes are listed below, in hexadecimal and with
@@ -17,6 +18,9 @@ void iset::call_prog(vmstate* state) {
     /* Opcode: 0NNN
      * Calls RCA 1802 program at address NNN
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "call_prog (0NNN)");
+#endif
     return;
 }
 
@@ -25,8 +29,13 @@ void iset::clear_screen(vmstate* state) {
     /* Opcode: 00E0
      * Call the routine at address NNN
      */
-    for (unsigned int i = 0; i < GFX_SIZE; ++i)
+#ifdef DEBUG
+    debug(iset_decode, state, "clear_screen (00E0)");
+#endif
+    for (unsigned int i = 0; i < GFX_SIZE; ++i) {
         state->gfx_buffer[i] = 0x0;
+        state->gfx_stale = true;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -34,6 +43,9 @@ void iset::ret_routine(vmstate* state) {
     /* Opcode: 00EE
      * Return from a routine
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "ret (00EE)");
+#endif
     state->ip = state->stack[state->sp];
     --state->sp;
 }
@@ -43,6 +55,9 @@ void iset::jump(vmstate* state) {
     /* Opcode: 1NNN
      * Jump to address NNN
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "jmp (1NNN)");
+#endif
     state->ip = state->curr_opcode & 0x0FFF;
     return;
 }
@@ -54,6 +69,9 @@ void iset::call_routine(vmstate* state) {
      */
     // save this stack frame, and increase stack pointer for routine being
     // called
+#ifdef DEBUG
+    debug(iset_decode, state, "call (2NNN)");
+#endif
     state->stack[state->sp] = state->ip;
     ++state->sp;
     iset::jump(state);
@@ -64,6 +82,9 @@ void iset::skip_if_equal(vmstate* state) {
     /* Opcode: 3XNN
      * Skip the next instruction if register X is equal to NN
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "skip_if_equal (3XNN)");
+#endif
     c8register comparison = state->curr_opcode & 0x00FF;
     byte reg = (byte) state->curr_opcode & 0x0F00 >> 8;
     // we increment by two here as memory is an array of bytes and operands
@@ -114,6 +135,9 @@ void iset::add_reg(vmstate* state) {
     /* Opcode: 7XNN
      * Add NN to the register X
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "add_reg (7XNN)");
+#endif
     byte reg = (byte) state->curr_opcode & 0x0F00 >> 8;
     c8register val = state->curr_opcode & 0x00FF;
     state->registers[reg] += val;
@@ -250,6 +274,9 @@ void iset::set_index(vmstate* state) {
     /* Opcode: ANNN
      * Set the index register to NNN
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "set_index (ANNN)");
+#endif
     word addr = state->curr_opcode & 0x0FFF;
 
     state->index = addr;
@@ -271,6 +298,9 @@ void iset::set_reg_rand_masked(vmstate* state) {
     /* Opcode: CXNN
      * Set VX to a random number and (& mask) NN.
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "set_reg_rand_masked (CXNN)");
+#endif
     byte mask = state->curr_opcode & 0x00FF;
     byte val  = (byte) std::rand();
     state->registers[0] = val & mask;
@@ -283,6 +313,9 @@ void iset::draw_sprite(vmstate* state) {
      * [X],[Y]. The sprite is N rows tall. If there is collision, set 
      * register F to 1.
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "draw_sprite (DXYN)");
+#endif
     state->registers[0xF] = 0;
     byte x = (state->curr_opcode & 0x0F00) >> 8,
          y = (state->curr_opcode & 0x00F0) >> 4,

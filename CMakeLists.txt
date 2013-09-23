@@ -45,6 +45,7 @@ add_executable (
         ${PROJECT_SOURCE_DIR}/c8vm.cpp
         ${PROJECT_SOURCE_DIR}/c8.cpp
         ${PROJECT_SOURCE_DIR}/iset.cpp
+        ${PROJECT_SOURCE_DIR}/debug.cpp
 )
 
 target_link_libraries(c8vm ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})
