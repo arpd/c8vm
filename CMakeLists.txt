@@ -40,6 +40,9 @@ message(STATUS "GLEW_INCLUDE_DIR: " ${GLEW_INCLUDE_DIR})
 # c8.h
 include_directories("${PROJECT_BINARY_DIR}")
 
+# defines
+# add_definitions(-DSTEPPED)
+
 add_executable (
         c8vm
         ${PROJECT_SOURCE_DIR}/c8vm.cpp
