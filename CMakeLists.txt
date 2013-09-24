@@ -42,7 +42,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # defines
 # add_definitions(-DSTEPPED)
-add_definitions(-DDEBUG)
+# add_definitions(-DDEBUG)
 
 add_executable (
         c8vm
@@ -50,6 +50,15 @@ add_executable (
         ${PROJECT_SOURCE_DIR}/c8.cpp
         ${PROJECT_SOURCE_DIR}/iset.cpp
         ${PROJECT_SOURCE_DIR}/debug.cpp
+)
+
+add_executable (
+        c8vm_tests
+        ${PROJECT_SOURCE_DIR}/c8runtests.cpp
+        ${PROJECT_SOURCE_DIR}/c8.cpp
+        ${PROJECT_SOURCE_DIR}/iset.cpp
+        ${PROJECT_SOURCE_DIR}/debug.cpp
+        ${PROJECT_SOURCE_DIR}/c8tests.cpp
 )
 
 target_link_libraries(c8vm ${GLEW_LIBRARIES} ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES})

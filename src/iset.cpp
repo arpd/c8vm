@@ -46,8 +46,8 @@ void iset::ret_routine(vmstate* state) {
 #ifdef DEBUG
     debug(iset_decode, state, "ret (00EE)");
 #endif
-    state->ip = state->stack[state->sp];
     --state->sp;
+    state->ip = state->stack[state->sp];
 }
 
 // ----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ void iset::jump(vmstate* state) {
     debug(iset_decode, state, "jmp (1NNN)");
 #endif
     word addr = state->curr_opcode & 0x0FFF;
-    state->ip = addr - 0x2;;
+    state->ip = addr;
     return;
 }
 
