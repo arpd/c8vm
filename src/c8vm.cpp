@@ -1,5 +1,6 @@
 #include "c8.h"
 #include "c8_config.h" // CMake configuration file
+#include "debug.h"
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -138,9 +139,13 @@ void vm_loop(void) {
     if (vm.is_on()) {
         if (vm.get_gfx_stale()) {
             render(vm.get_gfx_buf());
-            vm.set_gfx_stale(false);
+            vm.set_gfx_stale(true);
         }
         vm.do_cycle();
+#if STEPPED
+        cout << "cycle completed" << endl;
+        cin.get();
+#endif
     }
 }
 

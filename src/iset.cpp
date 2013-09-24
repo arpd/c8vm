@@ -58,7 +58,8 @@ void iset::jump(vmstate* state) {
 #ifdef DEBUG
     debug(iset_decode, state, "jmp (1NNN)");
 #endif
-    state->ip = state->curr_opcode & 0x0FFF;
+    word addr = state->curr_opcode & 0x0FFF;
+    state->ip = addr - 0x2;;
     return;
 }
 
@@ -74,7 +75,8 @@ void iset::call_routine(vmstate* state) {
 #endif
     state->stack[state->sp] = state->ip;
     ++state->sp;
-    iset::jump(state);
+    word addr = state->curr_opcode & 0x0FFF;
+    state->ip = addr;
 }
 
 // ----------------------------------------------------------------------------
@@ -89,7 +91,7 @@ void iset::skip_if_equal(vmstate* state) {
     byte reg = (byte) state->curr_opcode & 0x0F00 >> 8;
     // we increment by two here as memory is an array of bytes and operands
     // are composed of two
-    if (state->registers[reg] == comparison)
+    if (state->registers[reg] != comparison)
         state->ip += 0x2;
 
 }
@@ -99,6 +101,9 @@ void iset::skip_if_not_equal(vmstate* state) {
     /* Opcode: 4XNN
      * Skip the next instruction if register X is not equal to NN
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "skip_if_not_equal (4XNN)");
+#endif
     c8register comparison = state->curr_opcode & 0x00FF;
     byte reg = (byte) state->curr_opcode & 0x0F00 >> 8;
     // we increment by two here as memory is an array of bytes and operands
@@ -112,6 +117,9 @@ void iset::skip_if_equal_regs(vmstate* state) {
     /* Opcode: 5XY0
      * Skip the next instruction if register X is equal to register Y
      */
+#ifdef DEBUG
+    debug(iset_decode, state, "skip_if_equal_regs (5XY0)");
+#endif
     byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
         regy = (byte) state->curr_opcode & 0x00F0 >> 4;
     // we increment by two here as memory is an array of bytes and operands
@@ -125,7 +133,10 @@ void iset::set_reg(vmstate* state) {
     /* Opcode: 6XNN
      * Set the register X to NN
      */
-    byte reg = (byte) state->curr_opcode & 0x0F00 >> 8;
+#ifdef DEBUG
+    debug(iset_decode, state, "set_reg (6XNN)");
+#endif
+    byte reg = (state->curr_opcode & 0x0F00) >> 8;
     c8register val = state->curr_opcode & 0x00FF;
     state->registers[reg] = val;
 }
@@ -138,7 +149,7 @@ void iset::add_reg(vmstate* state) {
 #ifdef DEBUG
     debug(iset_decode, state, "add_reg (7XNN)");
 #endif
-    byte reg = (byte) state->curr_opcode & 0x0F00 >> 8;
+    byte reg = (byte) (state->curr_opcode & 0x0F00) >> 8;
     c8register val = state->curr_opcode & 0x00FF;
     state->registers[reg] += val;
 }
@@ -148,8 +159,11 @@ void iset::set_regx_regy(vmstate* state) {
     /* Opcode: 8XY0
      * Set register X to the value of register Y
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
-        regy = (byte) state->curr_opcode & 0x00F0 >> 4;
+#ifdef DEBUG
+    debug(iset_decode, state, "set_regx_regy (8XY0)");
+#endif
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8,
+         regy = (byte) (state->curr_opcode & 0x00F0) >> 4;
     state->registers[regx] = state->registers[regy];
 }
 
@@ -158,8 +172,11 @@ void iset::set_regx_or_regy(vmstate* state) {
     /* Opcode: 8XY1
      * Set register X to register X | register Y
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
-        regy = (byte) state->curr_opcode & 0x00F0 >> 4;
+#ifdef DEBUG
+    debug(iset_decode, state, "set_regx_or_regy (8XY1)");
+#endif
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8,
+         regy = (byte) (state->curr_opcode & 0x00F0) >> 4;
     state->registers[regx] |= state->registers[regy];
 }
 
@@ -168,8 +185,11 @@ void iset::set_regx_and_regy(vmstate* state) {
     /* Opcode: 8XY2
      * Set register X to register X & register Y
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
-        regy = (byte) state->curr_opcode & 0x00F0 >> 4;
+#ifdef DEBUG
+    debug(iset_decode, state, "set_regx_and_regy (8XY2)");
+#endif
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8,
+         regy = (byte) (state->curr_opcode & 0x00F0) >> 4;
     state->registers[regx] &= state->registers[regy];
 }
 
@@ -178,8 +198,11 @@ void iset::set_regx_xor_regy(vmstate* state) {
     /* Opcode: 8XY3
      * Set register X to register X ^ register Y
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
-        regy = (byte) state->curr_opcode & 0x00F0 >> 4;
+#ifdef DEBUG
+    debug(iset_decode, state, "set_regx_xor_regy (8XY3)");
+#endif
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8,
+         regy = (byte) (state->curr_opcode & 0x00F0) >> 4;
     state->registers[regx] ^= state->registers[regy];
 }
 
@@ -189,8 +212,11 @@ void iset::set_regx_add_regy(vmstate* state) {
      * Set register X to register X + register Y
      *      [!] register F is set to 1 if there is a carry, else 0
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
-        regy = (byte) state->curr_opcode & 0x00F0 >> 4;
+#ifdef DEBUG
+    debug(iset_decode, state, "set_regx_add_regy (8XY4)");
+#endif
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8,
+         regy = (byte) (state->curr_opcode & 0x00F0) >> 4;
     if (state->registers[regy] >
         0xFF - state->registers[regx])
         state->registers[0xF] = 1; // carry
@@ -206,8 +232,8 @@ void iset::set_regx_sub_regy(vmstate* state) {
      * Set register X to register X - register Y
      *      [!] register F is set to 0 if there is a borrow, else 0
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
-        regy = (byte) state->curr_opcode & 0x00F0 >> 4;
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8,
+         regy = (byte) (state->curr_opcode & 0x00F0) >> 4;
     if (state->registers[regy] < state->registers[regx])
         state->registers[0xF] = 1; // no borrow
     else
@@ -222,7 +248,7 @@ void iset::set_regx_rshift(vmstate* state) {
      * Set register X to register X >> 1
      *      [!] register F is set to the value of the LSB before the shift
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8;
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8;
     state->registers[0xF] = state->registers[regx] & 0x00F;
 
     state->registers[regx] >>= 1;
@@ -234,8 +260,8 @@ void iset::set_regx_regy_sub_regx(vmstate* state) {
      * Set register X to register Y - register X
      *      [!] register F is set to 0 if there is a borrow, else 0
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
-        regy = (byte) state->curr_opcode & 0x00F0 >> 4;
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8,
+         regy = (byte) (state->curr_opcode & 0x00F0) >> 4;
     if (state->registers[regy] > state->registers[regx])
         state->registers[0xF] = 1; // no borrow
     else
@@ -250,7 +276,7 @@ void iset::set_regx_lshift(vmstate* state) {
      * Set register X to register X << 1
      *      [!] register F is set to the value of the MSB before the shift
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8;
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8;
     state->registers[0xF] = (state->registers[regx] & 0xF00) >> 8;
 
     state->registers[regx] <<= 1;
@@ -261,8 +287,8 @@ void iset::skip_if_not_equal_regs(vmstate* state) {
     /* Opcode: 9XY0
      * Skip the next instruction if register X is not equal to register Y
      */
-    byte regx = (byte) state->curr_opcode & 0x0F00 >> 8,
-        regy = (byte) state->curr_opcode & 0x00F0 >> 4;
+    byte regx = (byte) (state->curr_opcode & 0x0F00) >> 8,
+         regy = (byte) (state->curr_opcode & 0x00F0) >> 4;
     // we increment by two here as memory is an array of bytes and operands
     // are composed of two
     if (state->registers[regx] != state->registers[regy])
@@ -290,7 +316,7 @@ void iset::jump_offset(vmstate* state) {
     word addr = state->curr_opcode & 0x0FFF;
     addr += state->registers[0];
 
-    iset::jump(state);
+    state->ip = addr;
 }
 
 // ----------------------------------------------------------------------------
@@ -309,17 +335,17 @@ void iset::set_reg_rand_masked(vmstate* state) {
 // ----------------------------------------------------------------------------
 void iset::draw_sprite(vmstate* state) {
     /* Opcode: DXYN
-     * Draw the sprite found at [index] to the coordinates taken from 
-     * [X],[Y]. The sprite is N rows tall. If there is collision, set 
+     * Draw the sprite found at [index] to the coordinates taken from
+     * [X],[Y]. The sprite is N rows tall. If there is collision, set
      * register F to 1.
      */
 #ifdef DEBUG
     debug(iset_decode, state, "draw_sprite (DXYN)");
 #endif
     state->registers[0xF] = 0;
-    byte x = (state->curr_opcode & 0x0F00) >> 8,
-         y = (state->curr_opcode & 0x00F0) >> 4,
-         n = (state->curr_opcode & 0x000F);
+    c8register x = state->registers[(state->curr_opcode & 0x0F00) >> 8],
+         y = state->registers[(state->curr_opcode & 0x00F0) >> 4];
+    int n = state->curr_opcode & 0x000F;
     byte pixel_row;
     for (byte yoff = 0; yoff < n; ++yoff) {
         pixel_row = state->memory[state->index + yoff];
@@ -331,7 +357,6 @@ void iset::draw_sprite(vmstate* state) {
             }
         }
     }
-
     state->gfx_stale = true; // let the vm know to redraw the screen
 }
 

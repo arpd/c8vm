@@ -155,7 +155,8 @@ void C8VM::fetch_opcode() {
     state.curr_opcode = opcode;
 #ifdef DEBUG
     std::cerr << "read opcode: "; print_hex(std::cerr, opcode);
-    std::cerr << "  [ip: " << state.ip << "]" << std::endl;
+    std::cerr << "  [ip: "; print_hex(std::cerr, state.ip);
+    std::cerr << "]" << std::endl;
 #endif
 }
 

@@ -14,7 +14,7 @@ set (c8vm_VERSION_MINOR 1)
 # compiler config
 set (CMAKE_CC_COMPILER  "/usr/bin/clang")
 set (CMAKE_CXX_COMPILER "/usr/bin/clang++")
-set (CMAKE_CXX_FLAGS "-g --std=c++11 -Wall -DDEBUG")
+set (CMAKE_CXX_FLAGS "-g --std=c++11 -Wall")
 
 # configure header file to pass some cmake settings to the src
 configure_file (
@@ -42,6 +42,7 @@ include_directories("${PROJECT_BINARY_DIR}")
 
 # defines
 # add_definitions(-DSTEPPED)
+add_definitions(-DDEBUG)
 
 add_executable (
         c8vm

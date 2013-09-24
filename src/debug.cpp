@@ -22,3 +22,12 @@ void debug(debug_kind db_type, vmstate* state, const std::string& str) {
             break;
     };
 }
+
+void print_gfx_buf(const byte* gfx_buf) {
+    std::cerr << "graphics buffer:" << std::endl;
+    for (int i = 0; i < 64*32; ++i) {
+        std::cerr << "[" << std::setw(1) << (int)gfx_buf[i] << "]";
+        if ((i+1) % 64 == 0)
+            std::cerr << std::endl;
+    }
+}
