@@ -17,5 +17,17 @@ namespace c8tests {
     void call_routine(vmstate* state, result* result);
     void skip_if_equal(vmstate* state, result* result);
     void skip_if_not_equal(vmstate* state, result* result);
+    void skip_if_equal_regs(vmstate* state, result* result);
+    void set_reg(vmstate* state, result* result);
+    void add_reg(vmstate* state, result* result);
+    void set_regx_regy(vmstate* state, result* result);
+    void set_regx_or_regy(vmstate* state, result* result);
+    void set_regx_and_regy(vmstate* state, result* result);
+    void set_regx_xor_regy(vmstate* state, result* result);
+    void set_regx_add_regy(vmstate* state, result* result);
+    void set_regx_sub_regy(vmstate* state, result* result);
+    void set_regx_rshift(vmstate* state, result* result);
+    void set_regx_regy_sub_regx(vmstate* state, result* result);
+    void set_regx_lshift(vmstate* state, result* result);
 };
 #endif

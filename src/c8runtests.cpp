@@ -19,6 +19,18 @@ void populate_tests() {
     tests["call_routine"] = c8tests::jump;
     tests["skip_if_equal"] = c8tests::skip_if_equal;
     tests["skip_if_not_equal"] = c8tests::skip_if_not_equal;
+    tests["skip_if_equal_regs"] = c8tests::skip_if_equal_regs;
+    tests["set_reg"] = c8tests::set_reg;
+    tests["add_reg"] = c8tests::add_reg;
+    tests["set_regx_regy"] = c8tests::set_regx_regy;
+    tests["set_regx_or_regy"] = c8tests::set_regx_or_regy;
+    tests["set_regx_and_regy"] = c8tests::set_regx_and_regy;
+    tests["set_regx_xor_regy"] = c8tests::set_regx_xor_regy;
+    tests["set_regx_add_regy"] = c8tests::set_regx_add_regy;
+    tests["set_regx_sub_regy"] = c8tests::set_regx_sub_regy;
+    tests["set_regx_rshift"] = c8tests::set_regx_rshift;
+    tests["set_regx_regy_sub_regx"] = c8tests::set_regx_regy_sub_regx;
+    tests["set_regx_lshift"] = c8tests::set_regx_lshift;
 }
 
 void print_result(const c8tests::result& result) {

@@ -141,3 +141,215 @@ void c8tests::skip_if_not_equal(vmstate* state, result* result) {
 }
 
 // ----------------------------------------------------------------------------
+
+void c8tests::skip_if_equal_regs(vmstate* state, result* result) {
+    std::stringstream actual, expected;
+    state->ip = 0x2;
+    state->curr_opcode    = 0x55A0;
+
+    state->registers[0x5] = 0xBA;
+    state->registers[0xA] = 0xDA;
+    word expected_ip = 0x2;
+    iset::skip_if_equal_regs(state);
+    word actual_ip = state->ip;
+    expected << "ip = " << expected_ip << std::endl;
+    actual   << "ip = " << actual_ip   << std::endl;
+
+    state->registers[0x5] = 0xDA;
+    expected_ip = 0x4;
+    iset::skip_if_equal_regs(state);
+    actual_ip = state->ip;
+
+    expected << "ip = " << expected_ip << std::endl;
+    actual << "ip = " << actual_ip << std::endl;
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::set_reg(vmstate* state, result* result) {
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xCC;
+    state->curr_opcode    = 0x6ADD;
+
+    word expected_reg = 0xDD;
+    iset::set_reg(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::add_reg(vmstate* state, result* result) {
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xCC;
+    state->curr_opcode    = 0x7A11;
+
+    word expected_reg = 0xDD;
+    iset::add_reg(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+
+    // TODO: Check overflow
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::set_regx_regy(vmstate* state, result* result) { 
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xCC;
+    state->registers[0xB] = 0xFF;
+    state->curr_opcode    = 0x8AB0;
+
+    word expected_reg     = 0xFF;
+    iset::set_regx_regy(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::set_regx_or_regy(vmstate* state, result* result) { 
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xAB;
+    state->registers[0xB] = 0xCD;
+    state->curr_opcode    = 0x8AB1;
+
+    word expected_reg     = 0xAB | 0xCD;
+    iset::set_regx_or_regy(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::set_regx_and_regy(vmstate* state, result* result) { 
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xAB;
+    state->registers[0xB] = 0xCD;
+    state->curr_opcode    = 0x8AB2;
+
+    word expected_reg     = 0xAB & 0xCD;
+    iset::set_regx_or_regy(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::set_regx_xor_regy(vmstate* state, result* result) { 
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xAB;
+    state->registers[0xB] = 0xCD;
+    state->curr_opcode    = 0x8AB3;
+
+    word expected_reg     = 0xAB ^ 0xCD;
+    iset::set_regx_or_regy(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::set_regx_add_regy(vmstate* state, result* result) { 
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xAB;
+    state->registers[0xB] = 0xCD;
+    state->curr_opcode    = 0x8AB4;
+
+    word expected_reg     = 0xAB + 0xCD;
+    iset::set_regx_or_regy(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+
+    // TODO: overflow
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::set_regx_sub_regy(vmstate* state, result* result) { 
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xAB;
+    state->registers[0xB] = 0xCD;
+    state->curr_opcode    = 0x8AB5;
+
+    word expected_reg     = 0xAB - 0xCD;
+    iset::set_regx_or_regy(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::set_regx_rshift(vmstate* state, result* result) { 
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xAB;
+    state->registers[0xB] = 0xCD;
+    state->curr_opcode    = 0x8AB7;
+
+    word expected_reg     = 0xCD - 0xAB;
+    iset::set_regx_or_regy(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::set_regx_regy_sub_regx(vmstate* state, result* result) { }
+
+// ----------------------------------------------------------------------------
+void c8tests::set_regx_lshift(vmstate* state, result* result) { 
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xAB;
+    state->curr_opcode    = 0x8ABE;
+
+    word expected_reg     = 0xAB << 1;
+    iset::set_regx_or_regy(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " << expected_reg << std::endl;
+    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
+
+// ----------------------------------------------------------------------------
