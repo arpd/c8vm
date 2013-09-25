@@ -16,14 +16,19 @@ void populate_tests() {
     tests["clear_screen"] = c8tests::clear_screen;
     tests["ret_routine"] = c8tests::ret_routine;
     tests["jump"] = c8tests::jump;
+    tests["call_routine"] = c8tests::jump;
+    tests["skip_if_equal"] = c8tests::skip_if_equal;
+    tests["skip_if_not_equal"] = c8tests::skip_if_not_equal;
 }
 
 void print_result(const c8tests::result& result) {
     cout << "Test: " << result.name << endl;
     cout << "\tpassed: " << boolalpha << result.pass << endl;
     if (!result.pass) {
-        cout << "\texpected(" << result.expected << ")" << endl
-             << "\tactual(" << result.actual << ")" << endl;
+        cout << "\texpected(" << std::endl << result.expected 
+             << endl << "\t)" << endl
+             << "\tactual("   << std::endl << result.actual
+             << endl << "\t)" << endl;
     }
     cout << "========================================================" << endl;
 }

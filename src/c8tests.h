@@ -14,5 +14,8 @@ namespace c8tests {
     void clear_screen(vmstate* state, result* result);
     void ret_routine(vmstate* state, result* result);
     void jump(vmstate* state, result* result);
+    void call_routine(vmstate* state, result* result);
+    void skip_if_equal(vmstate* state, result* result);
+    void skip_if_not_equal(vmstate* state, result* result);
 };
 #endif
