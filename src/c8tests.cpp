@@ -1,5 +1,6 @@
 #include "c8tests.h"
 #include "iset.h"
+#include "debug.h"
 #include <sstream>
 
 void c8tests::clear_result(result* r) {
@@ -72,11 +73,11 @@ void c8tests::call_routine(vmstate* state, result* result) {
          actual_sp_follow = state->stack[state->sp],
          actual_ip = state->ip;
     expected << "sp = " << expected_sp << std::endl
-             << "sp follow = " << expected_sp_follow << std::endl
-             << "ip = " << expected_ip << std::endl;
+        << "sp follow = " << expected_sp_follow << std::endl
+        << "ip = " << expected_ip << std::endl;
     actual << "sp = " << actual_sp << std::endl
-           << "sp follow = " << actual_sp_follow << std::endl
-           << "ip = " << actual_ip << std::endl;
+        << "sp follow = " << actual_sp_follow << std::endl
+        << "ip = " << actual_ip << std::endl;
     result->expected = expected.str();
     result->actual   = actual.str();
     result->pass = result->actual.compare(result->expected) == 0;
@@ -176,8 +177,10 @@ void c8tests::set_reg(vmstate* state, result* result) {
     word expected_reg = 0xDD;
     iset::set_reg(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
@@ -193,8 +196,10 @@ void c8tests::add_reg(vmstate* state, result* result) {
     word expected_reg = 0xDD;
     iset::add_reg(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
@@ -213,8 +218,10 @@ void c8tests::set_regx_regy(vmstate* state, result* result) {
     word expected_reg     = 0xFF;
     iset::set_regx_regy(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
@@ -231,8 +238,10 @@ void c8tests::set_regx_or_regy(vmstate* state, result* result) {
     word expected_reg     = 0xAB | 0xCD;
     iset::set_regx_or_regy(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
@@ -248,10 +257,12 @@ void c8tests::set_regx_and_regy(vmstate* state, result* result) {
     state->curr_opcode    = 0x8AB2;
 
     word expected_reg     = 0xAB & 0xCD;
-    iset::set_regx_or_regy(state);
+    iset::set_regx_and_regy(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
@@ -266,10 +277,12 @@ void c8tests::set_regx_xor_regy(vmstate* state, result* result) {
     state->curr_opcode    = 0x8AB3;
 
     word expected_reg     = 0xAB ^ 0xCD;
-    iset::set_regx_or_regy(state);
+    iset::set_regx_xor_regy(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
@@ -283,11 +296,13 @@ void c8tests::set_regx_add_regy(vmstate* state, result* result) {
     state->registers[0xB] = 0xCD;
     state->curr_opcode    = 0x8AB4;
 
-    word expected_reg     = 0xAB + 0xCD;
-    iset::set_regx_or_regy(state);
+    c8register expected_reg     = 0xAB + 0xCD;
+    iset::set_regx_add_regy(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
@@ -303,11 +318,13 @@ void c8tests::set_regx_sub_regy(vmstate* state, result* result) {
     state->registers[0xB] = 0xCD;
     state->curr_opcode    = 0x8AB5;
 
-    word expected_reg     = 0xAB - 0xCD;
-    iset::set_regx_or_regy(state);
+    c8register expected_reg     = 0xAB - 0xCD;
+    iset::set_regx_sub_regy(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
@@ -318,14 +335,15 @@ void c8tests::set_regx_sub_regy(vmstate* state, result* result) {
 void c8tests::set_regx_rshift(vmstate* state, result* result) { 
     std::stringstream actual, expected;
     state->registers[0xA] = 0xAB;
-    state->registers[0xB] = 0xCD;
-    state->curr_opcode    = 0x8AB7;
+    state->curr_opcode    = 0x8AB6;
 
-    word expected_reg     = 0xCD - 0xAB;
-    iset::set_regx_or_regy(state);
+    c8register expected_reg     = 0xAB >> 1;
+    iset::set_regx_rshift(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
@@ -333,7 +351,24 @@ void c8tests::set_regx_rshift(vmstate* state, result* result) {
 }
 
 // ----------------------------------------------------------------------------
-void c8tests::set_regx_regy_sub_regx(vmstate* state, result* result) { }
+void c8tests::set_regx_regy_sub_regx(vmstate* state, result* result) { 
+    std::stringstream actual, expected;
+    state->registers[0xA] = 0xAB;
+    state->registers[0xB] = 0xCD;
+    state->curr_opcode    = 0x8AB7;
+
+    c8register expected_reg     = 0xCD - 0xAB;
+    iset::set_regx_regy_sub_regx(state);
+    word actual_reg = state->registers[0xA];
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
+
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
 
 // ----------------------------------------------------------------------------
 void c8tests::set_regx_lshift(vmstate* state, result* result) { 
@@ -341,11 +376,13 @@ void c8tests::set_regx_lshift(vmstate* state, result* result) {
     state->registers[0xA] = 0xAB;
     state->curr_opcode    = 0x8ABE;
 
-    word expected_reg     = 0xAB << 1;
-    iset::set_regx_or_regy(state);
+    c8register expected_reg     = 0xAB << 1;
+    iset::set_regx_lshift(state);
     word actual_reg = state->registers[0xA];
-    expected << "registers[0xA] = " << expected_reg << std::endl;
-    actual   << "registers[0xA] = " << actual_reg   << std::endl;
+    expected << "registers[0xA] = " ; print_hex(expected, expected_reg);
+    expected << std::endl;
+    actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
+    actual << std::endl;
 
     result->expected = expected.str();
     result->actual   = actual.str();
