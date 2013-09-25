@@ -267,7 +267,7 @@ void iset::set_regx_regy_sub_regx(vmstate* state) {
     else
         state->registers[0xF] = 0;
 
-    state->registers[regx] -= state->registers[regy];
+    state->registers[regx] = state->registers[regy] - state->registers[regx];
 }
 
 // ----------------------------------------------------------------------------

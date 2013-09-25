@@ -33,16 +33,22 @@ void populate_tests() {
     tests["set_regx_lshift"] = c8tests::set_regx_lshift;
 }
 
-void print_result(const c8tests::result& result) {
-    cout << "Test: " << result.name << endl;
-    cout << "\tpassed: " << boolalpha << result.pass << endl;
-    if (!result.pass) {
-        cout << "\texpected(" << std::endl << result.expected 
-             << endl << "\t)" << endl
-             << "\tactual("   << std::endl << result.actual
-             << endl << "\t)" << endl;
+void print_result(const c8tests::result& result, bool concise) {
+    if (!concise) {
+        cout << "Test: " << result.name << endl;
+        cout << "\tpassed: " << boolalpha << result.pass << endl;
+        if (!result.pass) {
+            cout << "\texpected(" << std::endl << result.expected 
+                << endl << "\t)" << endl
+                << "\tactual("   << std::endl << result.actual
+                << endl << "\t)" << endl;
+        }
+    } else {
+        if (result.pass)
+            cout << ".";
+        else
+            cout << "!";
     }
-    cout << "========================================================" << endl;
 }
 
 c8tests::result run_test(void (*test_fnc)(vmstate*, c8tests::result*), vmstate* state) {
@@ -61,7 +67,7 @@ int main() {
         r.name = i->first;
         ++num_tests;
         if (r.pass) ++num_passes;
-        print_result(r);
+        print_result(r, true);
     }
-    cout << num_passes << " out of " << num_tests << " passed." << endl;
+    cout << endl << num_passes << " out of " << num_tests << " passed." << endl;
 }
