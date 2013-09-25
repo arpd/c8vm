@@ -74,10 +74,12 @@ void c8tests::call_routine(vmstate* state, result* result) {
          actual_ip = state->ip;
     expected << "sp = " << expected_sp << std::endl
         << "sp follow = " << expected_sp_follow << std::endl
-        << "ip = " << expected_ip << std::endl;
+        << "ip = " ; print_hex(expected, expected_ip);
+    expected << std::endl;
     actual << "sp = " << actual_sp << std::endl
         << "sp follow = " << actual_sp_follow << std::endl
-        << "ip = " << actual_ip << std::endl;
+        << "ip = " ; print_hex(actual, actual_ip);
+    actual << std::endl;
     result->expected = expected.str();
     result->actual   = actual.str();
     result->pass = result->actual.compare(result->expected) == 0;
@@ -94,8 +96,10 @@ void c8tests::skip_if_equal(vmstate* state, result* result) {
     word expected_ip = 0x2;
     iset::skip_if_equal(state);
     word actual_ip   = state->ip;
-    expected << "ip = " << expected_ip << std::endl;
-    actual << "ip = " << actual_ip << std::endl;
+    expected << "ip = " ; print_hex(expected, expected_ip);
+    expected << std::endl;
+    actual << "ip = " ; print_hex(actual, actual_ip);
+    actual << std::endl;
     /* however, this time it should ...
        n.b we don't have to reset state here, as the instruction functions
        don't actually alter the instruction pointer (i.e. this is driven
@@ -104,8 +108,10 @@ void c8tests::skip_if_equal(vmstate* state, result* result) {
     state->registers[0xE] = 0xAD;
     iset::skip_if_equal(state);
     actual_ip = state->ip;
-    expected << "ip = " << expected_ip << std::endl;
-    actual << "ip = " << actual_ip << std::endl;
+    expected << "ip = " ; print_hex(expected, expected_ip);
+    expected << std::endl;
+    actual << "ip = " ; print_hex(actual, actual_ip);
+    actual << std::endl;
     result->expected = expected.str();
     result->actual   = actual.str();
     result->pass = result->actual.compare(result->expected) == 0;
@@ -123,8 +129,10 @@ void c8tests::skip_if_not_equal(vmstate* state, result* result) {
     word expected_ip = 0x4;
     iset::skip_if_not_equal(state);
     word actual_ip   = state->ip;
-    expected << "ip = " << expected_ip << std::endl;
-    actual << "ip = " << actual_ip << std::endl;
+    expected << "ip = " ; print_hex(expected, expected_ip);
+    expected << std::endl;
+    actual << "ip = " ; print_hex(actual, actual_ip);
+    actual << std::endl;
     /* however, this time it should ...
        n.b we don't have to reset state here, as the instruction functions
        don't actually alter the instruction pointer (i.e. this is driven
@@ -133,8 +141,10 @@ void c8tests::skip_if_not_equal(vmstate* state, result* result) {
     state->registers[0xE] = 0xAD;
     iset::skip_if_not_equal(state);
     actual_ip = state->ip;
-    expected << "ip = " << expected_ip << std::endl;
-    actual << "ip = " << actual_ip << std::endl;
+    expected << "ip = " ; print_hex(expected, expected_ip);
+    expected << std::endl;
+    actual << "ip = " ; print_hex(actual, actual_ip);
+    actual << std::endl;
     result->expected = expected.str();
     result->actual   = actual.str();
     result->pass = result->actual.compare(result->expected) == 0;
@@ -153,16 +163,20 @@ void c8tests::skip_if_equal_regs(vmstate* state, result* result) {
     word expected_ip = 0x2;
     iset::skip_if_equal_regs(state);
     word actual_ip = state->ip;
-    expected << "ip = " << expected_ip << std::endl;
-    actual   << "ip = " << actual_ip   << std::endl;
+    expected << "ip = " ; print_hex(expected, expected_ip);
+    expected << std::endl;
+    actual   << "ip = " ; print_hex(actual, actual_ip);
+    actual << std::endl;
 
     state->registers[0x5] = 0xDA;
     expected_ip = 0x4;
     iset::skip_if_equal_regs(state);
     actual_ip = state->ip;
 
-    expected << "ip = " << expected_ip << std::endl;
-    actual << "ip = " << actual_ip << std::endl;
+    expected << "ip = " ; print_hex(expected, expected_ip);
+    expected << std::endl;
+    actual << "ip = " ; print_hex(actual, actual_ip);
+    actual << std::endl;
     result->expected = expected.str();
     result->actual   = actual.str();
     result->pass = result->actual.compare(result->expected) == 0;
@@ -384,6 +398,36 @@ void c8tests::set_regx_lshift(vmstate* state, result* result) {
     actual   << "registers[0xA] = " ; print_hex(actual, actual_reg);
     actual << std::endl;
 
+    result->expected = expected.str();
+    result->actual   = actual.str();
+    result->pass = result->actual.compare(result->expected) == 0;
+}
+
+// ----------------------------------------------------------------------------
+void c8tests::skip_if_not_equal_regs(vmstate* state, result* result) {
+    std::stringstream actual, expected;
+    state->ip = 0x2;
+    state->curr_opcode    = 0x95A0;
+
+    state->registers[0x5] = 0xBA;
+    state->registers[0xA] = 0xDA;
+    word expected_ip = 0x4;
+    iset::skip_if_not_equal_regs(state);
+    word actual_ip = state->ip;
+    expected << "ip = " ; print_hex(expected, expected_ip);
+    expected << std::endl;
+    actual   << "ip = " ; print_hex(actual, actual_ip);
+    actual << std::endl;
+
+    state->registers[0x5] = 0xDA;
+    expected_ip = 0x4;
+    iset::skip_if_not_equal_regs(state);
+    actual_ip = state->ip;
+
+    expected << "ip = " ; print_hex(expected, expected_ip);
+    expected << std::endl;
+    actual << "ip = " ; print_hex(actual, actual_ip);
+    actual << std::endl;
     result->expected = expected.str();
     result->actual   = actual.str();
     result->pass = result->actual.compare(result->expected) == 0;

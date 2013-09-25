@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <map>
 #include <string>
+#include "string.h"
 
 using namespace std;
 
@@ -31,6 +32,7 @@ void populate_tests() {
     tests["set_regx_rshift"] = c8tests::set_regx_rshift;
     tests["set_regx_regy_sub_regx"] = c8tests::set_regx_regy_sub_regx;
     tests["set_regx_lshift"] = c8tests::set_regx_lshift;
+    tests["skip_if_not_equal_regs"] = c8tests::skip_if_not_equal_regs;
 }
 
 void print_result(const c8tests::result& result, bool concise) {
@@ -58,16 +60,19 @@ c8tests::result run_test(void (*test_fnc)(vmstate*, c8tests::result*), vmstate* 
     return r;
 }
 
-int main() {
+int main(int argc, char** argv) {
     populate_tests();
     vmstate state;
+    bool concise = false;
+    if (argc > 1)
+        concise = strncmp("concise", argv[1], 7) == 0;
     int num_tests = 0, num_passes = 0;
     for (auto i = tests.begin(); i != tests.end(); ++i) {
         c8tests::result r(run_test(i->second, &state));
         r.name = i->first;
         ++num_tests;
         if (r.pass) ++num_passes;
-        print_result(r, true);
+        print_result(r, concise);
     }
     cout << endl << num_passes << " out of " << num_tests << " passed." << endl;
 }
