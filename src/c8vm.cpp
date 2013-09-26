@@ -139,7 +139,7 @@ void vm_loop(void) {
     if (vm.is_on()) {
         if (vm.get_gfx_stale()) {
             render(vm.get_gfx_buf());
-            vm.set_gfx_stale(true);
+            vm.set_gfx_stale(false);
         }
         vm.do_cycle();
 #if STEPPED
