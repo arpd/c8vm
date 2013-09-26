@@ -16,6 +16,14 @@ C8VM::C8VM() {
 
 // ----------------------------------------------------------------------------
 void C8VM::do_cycle() {
+    if (state.delay_timer > 0)
+        --state.delay_timer;
+    if (state.sound_timer > 0) {
+#if DEBUG
+        std::cerr << "BEEP!" << std::endl;
+#endif
+        --state.sound_timer;
+    }
     fetch_opcode();
     byte first  = ((state.curr_opcode & 0xF000) >> 12),
          second = ((state.curr_opcode & 0x0F00) >> 8),
@@ -176,6 +184,106 @@ void C8VM::init() {
         state.registers[i] = 0x0;
     for (unsigned int i = 0; i < MEM_SIZE; ++i)
         state.memory[i] = 0x0;
+
+    // load fontset in to memory
+    byte  font_offset = 0xA;
+    byte* font_pos    = &state.memory[0x0 + font_offset];
+
+    *font_pos   = 0xF0; // ****
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xF0; // ****
+
+    *++font_pos = 0x20; //  *
+    *++font_pos = 0x60; // **
+    *++font_pos = 0x20; //  *
+    *++font_pos = 0x20; //  *
+    *++font_pos = 0x70; // ***
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x10; //    *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x80; // *
+    *++font_pos = 0xF0; // ****
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x10; //    *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x10; //    *
+    *++font_pos = 0xF0; // ****
+
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x10; //    *
+    *++font_pos = 0x10; //    *
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x80; // *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x10; //    *
+    *++font_pos = 0xF0; // ****
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x80; // *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xF0; // ****
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x10; //    *
+    *++font_pos = 0x20; //   *
+    *++font_pos = 0x40; //  *
+    *++font_pos = 0x40; //  *
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xF0; // ****
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x10; //    *
+    *++font_pos = 0xF0; // ****
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0x90; // *  *
+
+    *++font_pos = 0xE0; // ***
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xE0; // ***
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xE0; // ***
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x80; // *
+    *++font_pos = 0x80; // *
+    *++font_pos = 0x80; // *
+    *++font_pos = 0xF0; // ****
+
+    *++font_pos = 0xE0; // ***
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0x90; // *  *
+    *++font_pos = 0xE0; // ***
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x80; // *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x80; // *
+    *++font_pos = 0xF0; // ****
+
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x80; // *
+    *++font_pos = 0xF0; // ****
+    *++font_pos = 0x80; // *
+    *++font_pos = 0x80; // *
 }
 
 // ----------------------------------------------------------------------------

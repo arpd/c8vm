@@ -344,7 +344,7 @@ void iset::draw_sprite(vmstate* state) {
 #endif
     state->registers[0xF] = 0;
     c8register x = state->registers[(state->curr_opcode & 0x0F00) >> 8],
-         y = state->registers[(state->curr_opcode & 0x00F0) >> 4];
+               y = state->registers[(state->curr_opcode & 0x00F0) >> 4];
     int n = state->curr_opcode & 0x000F;
     byte pixel_row;
     for (byte yoff = 0; yoff < n; ++yoff) {
@@ -365,8 +365,9 @@ void iset::skip_if_key_pressed(vmstate* state) {
     /* Opcode: EX9E
      * Skip the next instruction if the key in register X is pressed
      */
-    std::cerr << "[-] FAILURE: skip_if_key_pressed not implemented" << std::endl;
-    abort();
+    word key = (state->curr_opcode & 0x0F00) >> 8;
+    if (state->key[key])
+        state->ip += 0x2;
 }
 
 // ----------------------------------------------------------------------------
@@ -374,8 +375,9 @@ void iset::skip_if_key_not_pressed(vmstate* state) {
     /* Opcode: EXA1
      * Skip the next instruction if the key in register X is not pressed
      */
-    std::cerr << "[-] FAILURE: skip_if_key_not_pressed not implemented" << std::endl;
-    abort();
+    word key = (state->curr_opcode & 0x0F00) >> 8;
+    if (!state->key[key])
+        state->ip += 0x2;
 }
 
 // ----------------------------------------------------------------------------
@@ -383,8 +385,8 @@ void iset::set_reg_delay(vmstate* state) {
     /* Opcode: FX07
      * Set the register X to the value of the delay timer
      */
-    std::cerr << "[-] FAILURE: set_reg_delay not implemented" << std::endl;
-    abort();
+    c8register* x = &state->registers[(state->curr_opcode & 0x0F00) >> 8];
+    *x = state->delay_timer;
 }
 
 // ----------------------------------------------------------------------------
@@ -392,8 +394,15 @@ void iset::wait_key_press_store(vmstate* state) {
     /* Opcode: FX0A
      * Wait for a key press, then store in the register X
      */
-    std::cerr << "[-] FAILURE: wait_key_press_store not implemented" << std::endl;
-    abort();
+    bool key_press = false;
+    for (int i = 0; i < 0xF; ++i) {
+        if (state->key[i]) {
+            key_press = true;
+            break;
+        }
+    }
+    if (!key_press) // just execute another cycle rather than busy waiting
+        state->ip -= 0x2;
 }
 
 // ----------------------------------------------------------------------------
@@ -401,8 +410,8 @@ void iset::set_delay_regx(vmstate* state) {
     /* Opcode: FX15
      * Set the delay timer to register X
      */
-    std::cerr << "[-] FAILURE: set_delay_regx not implemented" << std::endl;
-    abort();
+    c8register* x = &state->registers[(state->curr_opcode & 0x0F00) >> 8];
+    state->delay_timer = *x;
 }
 
 // ----------------------------------------------------------------------------
@@ -410,8 +419,8 @@ void iset::set_sound_regx(vmstate* state) {
     /* Opcode: FX18
      * Set the sound timer to register X
      */
-    std::cerr << "[-] FAILURE: set_sound_regx not implemented" << std::endl;
-    abort();
+    c8register* x = &state->registers[(state->curr_opcode & 0x0F00) >> 8];
+    state->sound_timer = *x;
 }
 
 // ----------------------------------------------------------------------------
@@ -419,18 +428,19 @@ void iset::add_regx_to_index(vmstate* state) {
     /* Opcode: FX1E
      * Add the value from register X to the index register
      */
-    std::cerr << "[-] FAILURE: add_regx_to_index not implemented" << std::endl;
-    abort();
+    c8register* x = &state->registers[(state->curr_opcode & 0x0F00) >> 8];
+    state->index += *x;
 }
 
 // ----------------------------------------------------------------------------
 void iset::get_sprite_regx(vmstate* state) {
     /* Opcode: FX29
      * Set the index register to the location of the sprite for the character
-     * in register X
+     * in register X. (i.e. there is a fontset in memory somewhere, so point
+     * index at the character of that fontset as stored in register X)
      */
-    std::cerr << "[-] FAILURE: get_sprite_regx not implemented" << std::endl;
-    abort();
+    c8register* x = &state->registers[(state->curr_opcode & 0x0F00) >> 8];
+    state->index = *x * 0x5;
 }
 
 // ----------------------------------------------------------------------------
@@ -439,8 +449,13 @@ void iset::split_decimal(vmstate* state) {
      * Treating register X as a decimal, put the hundreds digit in [index], the
      * tens digit in [index+1] and the ones digit at [index+2]
      */
-    std::cerr << "[-] FAILURE: split_decimal not implemented" << std::endl;
-    abort();
+    c8register* x = &state->registers[(state->curr_opcode & 0x0F00) >> 8];
+    word ones = *x % 10,
+         tens = (*x % 100) / 10,
+         hundreds = (*x % 1000) / 100;
+    state->memory[state->index]   = hundreds;
+    state->memory[state->index+1] = tens;
+    state->memory[state->index+2] = ones;
 }
 
 // ----------------------------------------------------------------------------
@@ -449,8 +464,11 @@ void iset::dump_regs_to_regx(vmstate* state) {
      * Dump values of registers from register 0 -> register X in the memory
      * starting at [index]
      */
-    std::cerr << "[-] FAILURE: dump_regs_to_regx not implemented" << std::endl;
-    abort();
+    word start_loc = state->index;
+    int end_reg = (state->curr_opcode & 0x0F00) >> 8;
+    word loc = start_loc;
+    for (int reg = 0; reg < end_reg; ++reg, ++loc)
+        state->memory[loc] = state->registers[reg];
 }
 
 
@@ -460,6 +478,9 @@ void iset::slurp_regs_to_regx(vmstate* state) {
      * Set values of registers from register 0 -> register X to values in
      * memory starting at [index]
      */
-    std::cerr << "[-] FAILURE: slurp_regs_to_regx not implemented" << std::endl;
-    abort();
+    word start_loc = state->index;
+    int end_reg = (state->curr_opcode & 0x0F00) >> 8;
+    word loc = start_loc;
+    for (int reg = 0; reg < end_reg; ++reg, ++loc)
+        state->registers[reg] = state->memory[loc] ;
 }
